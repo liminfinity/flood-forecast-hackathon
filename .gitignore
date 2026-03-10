@@ -1,55 +1,28 @@
-# =========================
 # Python
-# =========================
 __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
-# =========================
 # Virtual environments
-# =========================
 venv/
 .env/
 .venv/
-env/
 
-# =========================
-# Jupyter
-# =========================
-.ipynb_checkpoints/
+# IDE
+.vscode/
+.idea/
 
-# =========================
-# OS files
-# =========================
+# OS
 .DS_Store
 Thumbs.db
 
-# =========================
-# IDE
-# =========================
-.vscode/
-.idea/
-*.iml
-
-# =========================
 # Logs
-# =========================
 *.log
 
-# =========================
-# Data files
-# =========================
-data/
-datasets/
-*.parquet
-*.feather
+# Ignore generated data
+data/processed/
 
-# =========================
 # Model artifacts
-# =========================
 models/
 checkpoints/
 *.pkl
@@ -57,21 +30,6 @@ checkpoints/
 *.pt
 *.pth
 
-# =========================
-# Build
-# =========================
-build/
-dist/
-*.egg-info/
-
-# =========================
 # Cache
-# =========================
 .cache/
 .pytest_cache/
-
-# =========================
-# Secrets
-# =========================
-.env.local
-.env.*.local

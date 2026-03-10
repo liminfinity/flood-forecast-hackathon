@@ -12,6 +12,8 @@ import requests
 ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive"
 HOURLY_VARS = [
     "temperature_2m",
+    "relative_humidity_2m",
+    "surface_pressure",
     "precipitation",
     "rain",
 ]
