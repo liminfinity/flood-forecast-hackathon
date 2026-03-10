@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Ignore generated data
+data/processed/
+
+# Model artifacts
+models/
+checkpoints/
+*.pkl
+*.joblib
+*.pt
+*.pth
+
+# Cache
+.cache/
+.pytest_cache/

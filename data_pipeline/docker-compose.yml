@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  pipeline:
+    build: .
+    volumes:
+      - ./config:/app/config
+      - ./data:/app/data
+    command: >
+      --raw /app/data/raw_dataset.csv
+      --bridges /app/config/bridges.csv
+      --out-dir /app/data/processed
