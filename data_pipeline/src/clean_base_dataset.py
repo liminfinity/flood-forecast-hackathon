@@ -79,7 +79,6 @@ def extract_csv_from_multipart(raw_text: str) -> str | None:
     for line in lines[header_index:]:
         stripped = line.strip()
 
-        # конец multipart блока
         if stripped.startswith("--") and csv_lines:
             break
 
@@ -101,13 +100,11 @@ def normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
 
     rename_map = {}
 
-    if "bridge_id" not in df.columns:
-        if "sensor_id" in df.columns:
-            rename_map["sensor_id"] = "bridge_id"
+    if "bridge_id" not in df.columns and "sensor_id" in df.columns:
+        rename_map["sensor_id"] = "bridge_id"
 
-    if "water_level" not in df.columns:
-        if "value" in df.columns:
-            rename_map["value"] = "water_level"
+    if "water_level" not in df.columns and "value" in df.columns:
+        rename_map["value"] = "water_level"
 
     if "timestamp" not in df.columns:
         if "ts_create" in df.columns:
@@ -144,10 +141,25 @@ def normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def normalize_bridge_id(series: pd.Series) -> pd.Series:
+    """
+    Приводит bridge_id к единому строковому формату:
+    1 -> "1"
+    1.0 -> "1"
+    "1" -> "1"
+    """
+    numeric = pd.to_numeric(series, errors="coerce")
+    result = series.astype(str).str.strip()
+
+    mask = numeric.notna()
+    result.loc[mask] = numeric.loc[mask].astype("Int64").astype(str)
+
+    return result
+
+
 def load_raw_dataset(input_path: Path) -> pd.DataFrame:
     raw_text = input_path.read_text(encoding="utf-8", errors="ignore")
 
-    # Сначала пробуем извлечь CSV из multipart
     extracted = extract_csv_from_multipart(raw_text)
     if extracted is not None:
         df = try_read_csv(extracted)
@@ -162,7 +174,7 @@ def load_raw_dataset(input_path: Path) -> pd.DataFrame:
 
     df = normalize_columns(df)
 
-    df["bridge_id"] = df["bridge_id"].astype(str)
+    df["bridge_id"] = normalize_bridge_id(df["bridge_id"])
     df["water_level"] = pd.to_numeric(df["water_level"], errors="coerce")
 
     df = df.dropna(subset=["bridge_id", "water_level", "timestamp"])

@@ -7,6 +7,22 @@ from pathlib import Path
 import pandas as pd
 
 
+def normalize_bridge_id(series: pd.Series) -> pd.Series:
+    """
+    Приводит bridge_id к единому строковому виду:
+    1 -> "1"
+    1.0 -> "1"
+    "1" -> "1"
+    """
+    numeric = pd.to_numeric(series, errors="coerce")
+    result = series.astype(str).str.strip()
+
+    mask = numeric.notna()
+    result.loc[mask] = numeric.loc[mask].astype("Int64").astype(str)
+
+    return result
+
+
 def add_time_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
 
@@ -195,8 +211,8 @@ def main() -> None:
     base = pd.read_csv(base_path)
     weather = pd.read_csv(weather_path)
 
-    base["bridge_id"] = base["bridge_id"].astype(str)
-    weather["bridge_id"] = weather["bridge_id"].astype(str)
+    base["bridge_id"] = normalize_bridge_id(base["bridge_id"])
+    weather["bridge_id"] = normalize_bridge_id(weather["bridge_id"])
 
     base["timestamp"] = pd.to_datetime(base["timestamp"], utc=True)
     weather["timestamp"] = pd.to_datetime(weather["timestamp"], utc=True)
