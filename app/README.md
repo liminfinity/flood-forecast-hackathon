@@ -1,73 +1,200 @@
-# Welcome to your Lovable project
+# АкваНадзор Кача
 
-## Project info
+**Система мониторинга уровня воды и прогнозирования паводков для реки Кача (Красноярск).**
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+---
 
-## How can I edit this code?
+## Описание
 
-There are several ways of editing your application.
+АкваНадзор Кача — веб-приложение для мониторинга гидрологической обстановки на реке Кача в черте города Красноярска.
 
-**Use Lovable**
+Приложение решает задачу оперативного отслеживания уровня воды на ключевых участках реки, прогнозирования подъёма воды и оценки паводковой опасности.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Система отображает:
 
-Changes made via Lovable will be committed automatically to this repo.
+- текущий уровень воды по данным сенсоров на мостах
+- прогноз уровня воды на ближайшие 6, 24 и 72 часа
+- комплексный индекс паводковой опасности (CFRM)
+- потенциальные зоны разлива реки
 
-**Use your preferred IDE**
+Приложение помогает оперативным службам и городским властям принимать обоснованные решения на основе актуальных данных и прогнозов.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Основные возможности
 
-Follow these steps:
+- 🗺 **Интерактивная карта** реки Кача с отображением русла и мостов
+- 📡 **Сенсоры на мостах** — текущий уровень воды в реальном времени
+- 📈 **Прогноз уровня воды** на +6 ч, +24 ч и +72 ч с помощью моделей машинного обучения
+- 🔴 **Индекс паводковой опасности** — цветовая индикация уровня риска
+- 🌊 **Визуализация зон разлива** — отображение потенциально затопляемых территорий
+- 🔔 **Система уведомлений** — автоматические оповещения при повышении уровня воды
+- 📅 **Временная шкала** — выбор даты и времени для просмотра исторических данных
+- 📊 **Аналитическая панель** — детальный анализ данных по каждому мосту
+- 🌓 **Тёмная и светлая тема** — переключение режима оформления
+- 📱 **Адаптивный интерфейс** — поддержка десктопа, планшета и мобильных устройств
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Карта
 
-# Step 3: Install the necessary dependencies.
-npm i
+Интерактивная карта является центральным элементом интерфейса и отображает:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+- **Русло реки Кача** — линия реки на карте города
+- **Мосты с сенсорами** — маркеры с данными уровня воды
+- **Цветовая индикация риска** — маркеры окрашены в зависимости от уровня опасности:
+  - 🟢 зелёный — норма
+  - 🟡 жёлтый — повышенный уровень
+  - 🔴 красный — опасный уровень
+- **Всплывающие карточки** — при наведении на маркер отображается информация о мосте: уровень воды, тренд, индекс риска, класс CFRM
+- **Зоны возможного разлива** — визуализация территорий, подверженных затоплению
+
+Карта построена на основе [MapLibre GL JS](https://maplibre.org/) с тайлами [CARTO](https://carto.com/).
+
+---
+
+## Прогноз
+
+Приложение использует модели машинного обучения в формате **ONNX** (CatBoost) для прогнозирования уровня воды. Инференс выполняется непосредственно в браузере с помощью [ONNX Runtime Web](https://onnxruntime.ai/).
+
+| Горизонт | Модель               | Описание                          |
+|----------|----------------------|-----------------------------------|
+| +6 ч     | `catboost_6h.onnx`   | Краткосрочный прогноз             |
+| +24 ч    | `catboost_24h.onnx`  | Прогноз на сутки                  |
+| +72 ч    | `catboost_72h.onnx`  | Среднесрочный прогноз на 3 дня    |
+
+Модели используют лаговые признаки и скользящие статистики (среднее, стандартное отклонение) по историческим данным уровня воды.
+
+---
+
+## Индекс риска
+
+Система оценивает паводковую опасность с помощью комплексного индекса **CFRM** (Composite Flood Risk Metric).
+
+| Класс риска       | Диапазон CFRM | Описание                                      |
+|--------------------|---------------|------------------------------------------------|
+| 🟢 Низкий          | 0.00 – 0.25   | Уровень воды в пределах нормы                  |
+| 🟡 Средний         | 0.25 – 0.50   | Незначительное повышение, требуется наблюдение  |
+| 🟠 Повышенный      | 0.50 – 0.75   | Существенное повышение, возможен подтоп         |
+| 🔴 Критический     | 0.75 – 1.00   | Высокая вероятность затопления, требуются меры  |
+
+---
+
+## Интерфейс
+
+Основные элементы пользовательского интерфейса:
+
+| Элемент                  | Описание                                                        |
+|--------------------------|-----------------------------------------------------------------|
+| **Карта**                | Интерактивная карта реки с маркерами мостов                     |
+| **Карточки статистики**  | Сводные показатели: количество сенсоров, средний уровень, тренд |
+| **Панель моста**         | Детальная информация по выбранному мосту с графиками            |
+| **Временная шкала**      | Слайдер для выбора даты и времени просмотра данных              |
+| **Уведомления**         | Список текущих предупреждений и событий                         |
+| **Аналитика**           | Страница с детальным анализом данных по всем мостам             |
+
+---
+
+## Технологии
+
+| Технология            | Назначение                              |
+|-----------------------|-----------------------------------------|
+| React 18              | UI-фреймворк                            |
+| TypeScript            | Типизация                               |
+| Vite                  | Сборка и dev-сервер                     |
+| Tailwind CSS          | Стилизация                              |
+| MapLibre GL JS        | Интерактивная карта                     |
+| ONNX Runtime Web      | Инференс ML-моделей в браузере          |
+| Recharts              | Графики и визуализация данных           |
+| Framer Motion         | Анимации интерфейса                     |
+| shadcn/ui             | Библиотека UI-компонентов               |
+
+---
+
+## Установка
+
+```bash
+cd app
+npm install
+```
+
+---
+
+## Запуск
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+После запуска приложение доступно по адресу:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```
+http://localhost:5173
+```
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Структура проекта
 
-## What technologies are used for this project?
+```
+app/
+│
+├── public/
+│   ├── data/                  # CSV-данные сенсоров и погоды
+│   │   ├── sensor_data.csv
+│   │   └── weather_data.csv
+│   └── models/                # ONNX-модели прогнозирования
+│       ├── catboost_6h.onnx
+│       ├── catboost_24h.onnx
+│       └── catboost_72h.onnx
+│
+├── src/
+│   ├── components/            # UI-компоненты
+│   │   ├── Header.tsx
+│   │   ├── RiverMap.tsx
+│   │   ├── StatsCards.tsx
+│   │   ├── BridgeDetailsPanel.tsx
+│   │   ├── TimelineSlider.tsx
+│   │   ├── NotificationPanel.tsx
+│   │   ├── WaterChart.tsx
+│   │   └── ...
+│   │
+│   ├── pages/                 # Страницы приложения
+│   │   ├── Index.tsx
+│   │   └── AnalyticsPage.tsx
+│   │
+│   ├── data/                  # Сервисы данных и ML
+│   │   ├── dataService.ts
+│   │   ├── onnxService.ts
+│   │   ├── cfrmService.ts
+│   │   ├── forecastService.ts
+│   │   └── mockData.ts
+│   │
+│   ├── hooks/                 # React-хуки
+│   │   └── useTheme.tsx
+│   │
+│   └── index.css              # Глобальные стили и тема
+│
+├── package.json
+└── README.md
+```
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Связь с основным проектом
 
-## How can I deploy this project?
+Веб-приложение является интерфейсной частью системы **flood-forecast** и работает совместно с:
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+- **Pipeline обработки данных** — сбор и подготовка данных с гидрологических сенсоров
+- **Модели прогнозирования** — обучение CatBoost-моделей для предсказания уровня воды
+- **Математическая модель CFRM** — комплексная оценка паводковой опасности
 
-## Can I connect a custom domain to my Lovable project?
+Приложение получает подготовленные данные и ONNX-модели из основного pipeline и выполняет инференс непосредственно в браузере пользователя.
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Назначение
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Приложение **АкваНадзор Кача** предназначено для оперативного мониторинга паводковой ситуации на реке Кача и демонстрации системы прогнозирования уровня воды на основе моделей машинного обучения.
+
+Система может использоваться городскими службами, МЧС и администрацией Красноярска для принятия решений в период паводковой опасности.
