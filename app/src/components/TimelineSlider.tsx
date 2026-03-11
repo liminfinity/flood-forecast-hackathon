@@ -51,17 +51,17 @@ export function TimelineSlider({ selectedDate, onChange, dataRange }: Props) {
   };
 
   return (
-    <div className="border-t border-border bg-card/90 backdrop-blur-sm px-3 py-2 sm:px-6 sm:py-3 shrink-0">
+    <div className="border-t border-border bg-card/90 backdrop-blur-sm px-3 py-2 sm:px-4 sm:py-2.5 lg:px-6 lg:py-3 shrink-0">
       <div className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
         <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground shrink-0" />
-        <span className="text-[11px] sm:text-xs font-medium text-foreground truncate">
+        <span className="text-[10px] sm:text-xs font-medium text-foreground truncate">
           {format(selectedDate, 'dd MMM yyyy, HH:mm', { locale: ru })}
         </span>
 
         <Popover>
           <PopoverTrigger asChild>
-            <button className="rounded-md p-1 sm:p-1.5 text-muted-foreground hover:bg-muted transition-colors">
-              <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            <button className="rounded-md p-1.5 text-muted-foreground hover:bg-muted transition-colors">
+              <Calendar className="h-3.5 w-3.5" />
             </button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
@@ -85,10 +85,10 @@ export function TimelineSlider({ selectedDate, onChange, dataRange }: Props) {
             <button
               key={btn.label}
               onClick={() => onChange(new Date(rangeStart + btn.offset * 3600000))}
-              className={`rounded-md px-2 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-medium transition whitespace-nowrap shrink-0 ${
+              className={`rounded-md px-2 sm:px-2.5 py-1 text-[10px] sm:text-[11px] font-medium transition whitespace-nowrap shrink-0 min-h-[28px] sm:min-h-0 ${
                 Math.abs(currentOffset - btn.offset) < 2
                   ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted text-muted-foreground hover:bg-accent'
+                  : 'bg-muted text-muted-foreground hover:bg-accent active:bg-accent/80'
               }`}
             >
               {btn.label}
@@ -104,7 +104,7 @@ export function TimelineSlider({ selectedDate, onChange, dataRange }: Props) {
           max={totalHours}
           step={1}
           onValueChange={(v) => onChange(new Date(rangeStart + v[0] * 3600000))}
-          className="flex-1"
+          className="flex-1 [&_[role=slider]]:h-5 [&_[role=slider]]:w-5 sm:[&_[role=slider]]:h-4 sm:[&_[role=slider]]:w-4"
         />
         <span className="text-[9px] sm:text-[10px] text-muted-foreground w-12 sm:w-14 shrink-0 text-right">{endLabel}</span>
       </div>

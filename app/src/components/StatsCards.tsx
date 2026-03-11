@@ -17,23 +17,23 @@ export function StatsCards({ states }: StatsCardsProps) {
     { label: 'Норма', value: safe, icon: ShieldCheck, cls: 'text-safe' },
     { label: 'Внимание', value: warning, icon: AlertTriangle, cls: 'text-warning' },
     { label: 'Опасно', value: danger, icon: AlertOctagon, cls: 'text-danger' },
-    { label: 'Средний уровень', value: `${avgLevel} см`, icon: Waves, cls: 'text-water' },
+    { label: 'Ср. уровень', value: `${avgLevel} см`, icon: Waves, cls: 'text-water' },
   ];
 
   return (
-    <div className="grid grid-cols-5 gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-6 sm:py-2 shrink-0">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 lg:px-6 shrink-0">
       {cards.map((card, i) => (
         <motion.div
           key={card.label}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.05 }}
-          className="flex items-center gap-1.5 sm:gap-2.5 rounded-lg border border-border bg-card p-2 sm:p-3 shadow-sm"
+          className="flex items-center gap-2 sm:gap-2.5 rounded-lg border border-border bg-card p-2 sm:p-2.5 lg:p-3 shadow-sm hover:shadow-md transition-shadow"
         >
-          <card.icon className={`h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 ${card.cls}`} />
+          <card.icon className={`h-4 w-4 shrink-0 ${card.cls}`} />
           <div className="min-w-0">
-            <p className="text-sm sm:text-lg font-bold text-foreground leading-tight">{card.value}</p>
-            <p className="text-[9px] sm:text-[11px] text-muted-foreground truncate">{card.label}</p>
+            <p className="text-sm sm:text-base lg:text-lg font-bold text-foreground leading-tight">{card.value}</p>
+            <p className="text-[9px] sm:text-[10px] lg:text-[11px] text-muted-foreground truncate">{card.label}</p>
           </div>
         </motion.div>
       ))}
