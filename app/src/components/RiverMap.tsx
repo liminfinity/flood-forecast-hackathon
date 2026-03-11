@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { type BridgeState, getRiskLabel, riverCoordinates } from '@/data/mockData';
+import { type BridgeState, getRiskLabel } from '@/data/mockData';
 import { computeCfrm, getRiskClassLabel } from '@/data/cfrmService';
 import { Legend } from './Legend';
 import { InfoPanel } from './InfoPanel';
@@ -93,42 +93,50 @@ export function RiverMap({ bridges, selectedDate, onBridgeClick, events }: Props
         },
         layers: [{ id: 'carto', type: 'raster', source: 'carto' }],
       },
-      center: [92.862, 56.035],
-      zoom: 12.5,
-      maxZoom: 16,
-      minZoom: 11,
+      center: [92.860, 56.035],
+      zoom: 12.3,
+      maxZoom: 17,
+      minZoom: 10,
     });
 
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
 
     const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 12 });
 
-    map.on('load', () => {
+    map.on('load', async () => {
+      // Load real river geometry from GeoJSON
+      let riverData: GeoJSON.FeatureCollection | GeoJSON.Feature;
+      try {
+        const resp = await fetch('/data/kacha-river.geojson');
+        riverData = await resp.json();
+      } catch {
+        riverData = { type: 'FeatureCollection', features: [] };
+      }
+
       map.addSource('river', {
         type: 'geojson',
-        data: {
-          type: 'Feature' as const,
-          geometry: { type: 'LineString' as const, coordinates: riverCoordinates },
-          properties: {},
-        },
+        data: riverData,
       });
       map.addLayer({
         id: 'river-glow-outer',
         type: 'line',
         source: 'river',
-        paint: { 'line-color': '#3b82f6', 'line-width': 22, 'line-opacity': 0.08, 'line-blur': 10 },
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: { 'line-color': '#3b82f6', 'line-width': 24, 'line-opacity': 0.08, 'line-blur': 12 },
       });
       map.addLayer({
         id: 'river-glow',
         type: 'line',
         source: 'river',
-        paint: { 'line-color': '#60a5fa', 'line-width': 14, 'line-opacity': 0.18, 'line-blur': 6 },
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: { 'line-color': '#60a5fa', 'line-width': 14, 'line-opacity': 0.2, 'line-blur': 6 },
       });
       map.addLayer({
         id: 'river-line',
         type: 'line',
         source: 'river',
-        paint: { 'line-color': '#2563eb', 'line-width': 4, 'line-opacity': 0.7 },
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: { 'line-color': '#2563eb', 'line-width': 5, 'line-opacity': 0.75 },
       });
 
       map.addSource('bridges', { type: 'geojson', data: emptyFC });

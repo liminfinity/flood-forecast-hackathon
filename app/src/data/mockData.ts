@@ -370,34 +370,8 @@ export function generateEventLog(states: BridgeState[], date: Date): EventLogEnt
   return events.sort((a, b) => b.time.getTime() - a.time.getTime()).slice(0, 20);
 }
 
-export const riverCoordinates: [number, number][] = [
-  [92.905, 56.013],
-  [92.896, 56.015],
-  [92.890, 56.016],
-  [92.882, 56.017],
-  [92.876, 56.018],
-  [92.870, 56.018],
-  [92.866, 56.017],
-  [92.860, 56.0168],
-  [92.853, 56.017],
-  [92.849, 56.019],
-  [92.845, 56.022],
-  [92.842, 56.0255],
-  [92.839, 56.028],
-  [92.836, 56.031],
-  [92.834, 56.033],
-  [92.832, 56.0357],
-  [92.833, 56.038],
-  [92.835, 56.040],
-  [92.838, 56.042],
-  [92.840, 56.044],
-  [92.842, 56.047],
-  [92.845, 56.050],
-  [92.847, 56.053],
-  [92.849, 56.055],
-  [92.850, 56.057],
-  [92.851, 56.059],
-];
+// River geometry is now loaded from public/data/kacha-river.geojson (real OSM data)
+
 
 export function getDataTimeRange(): { start: Date; end: Date } | null {
   if (!dataLoaded || !dataStartMs || !dataEndMs) return null;
